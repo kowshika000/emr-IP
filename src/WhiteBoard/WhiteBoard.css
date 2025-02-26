@@ -1,0 +1,18 @@
+.white-form-grp {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 20px;
+  background-color: #e7e7e7;
+  padding: 20px;
+  border-radius: 8px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  justify-content: space-between;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+.search-btn {
+  /* margin-left: 20px !important; */
+  height: 30px;
+  align-self: center;
+}

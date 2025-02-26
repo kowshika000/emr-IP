@@ -1,0 +1,103 @@
+.text-header {
+  font-weight: 700;
+  font-size: 1em;
+}
+/*
+thead tr:nth-child(odd) {
+  background-color: #2b9aca !important;
+}
+
+thead tr:nth-child(even) {
+  background-color: #fff;
+}
+
+thead {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 1 !important;
+}
+
+thead th {
+  text-align: center !important;
+  font-size: 17px !important;
+  font-weight: 500;
+}
+
+tbody td {
+  text-align: center !important;
+  font-size: 15px !important;
+}
+
+thead tr th {
+  color: #fff !important;
+}
+
+tbody tr:nth-child(odd) {
+  background-color: #ddd;
+}
+
+td {
+  padding: 0.5em 1em !important;
+}
+
+.css-5st28y-MuiInputBase-root-MuiOutlinedInput-root-MuiSelect-root:focus-within {
+  border-color: #2b9aca !important;
+} */
+
+/* ------------------------- */
+
+input:focus-within {
+  border-color: #2b9aca !important;
+}
+input:focus-visible {
+  outline: none;
+}
+select:focus-within {
+  border-color: #2b9aca !important;
+}
+select:focus-visible {
+  outline: none;
+}
+.form-input > input,
+select {
+  border: 2px solid rgb(190, 190, 190);
+  border-radius: 8px;
+  padding: 8px;
+  /* width: 120px; */
+  height: 32px !important;
+}
+.form-input {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.custume_input {
+  width: 140px !important;
+  height: 35px !important;
+  padding: 0;
+}
+.css-1orzuox-MuiTableCell-root {
+  padding: 10px 16px 10px 16px !important;
+}
+label {
+  font-size: 0.8em;
+}
+
+.cancelMdl {
+  min-width: 500px;
+  height: auto;
+  min-height: 200px;
+}
+
+.custume_textarea {
+  width: 100%;
+  min-width: 200px;
+  max-width: 100%;
+  height: 60px;
+  resize: both;
+  overflow-y: auto;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
