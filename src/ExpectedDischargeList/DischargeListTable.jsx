@@ -1,27 +1,154 @@
-import { useState } from "react";
-import { Box } from "@mui/material";
-import React from "react";
-import IPTable from "../Components/IPTable";
+import React, { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { fetchDischargeList } from "../Redux/slice/ExpectedDischarge/dischargeListSlice";
+import { Table, Input, Space, Button, Dropdown, Menu } from "antd";
+import { SearchOutlined, MoreOutlined } from "@ant-design/icons";
 import DischargeDate from "./DischargeMdl/DischargeDate";
-import DateRangeIcon from "@mui/icons-material/DateRange";
-import EditIcon from "@mui/icons-material/Edit";
-import LocalPharmacyIcon from "@mui/icons-material/LocalPharmacy";
-import AccessibilityIcon from "@mui/icons-material/Accessibility";
 import DischargeEntry from "./DischargeMdl/DischargeEntry";
 import NursingClearence from "./DischargeMdl/NursingClearence";
 import Pharmacy from "./DischargeMdl/Pharmacy";
 
 const DischargeListTable = () => {
+  const dispatch = useDispatch();
+  const today = new Date().toISOString().split("T")[0];
+  useEffect(() => {
+    const dischargeDate = today;
+    dispatch(fetchDischargeList(dischargeDate));
+  }, [dispatch]);
+
+  const [modals, setModals] = useState({
+    "Change exp discharge date": false,
+    "View/edit discharge details": false,
+    "Issue pharmacy": false,
+    "Nursing clearance set": false,
+  });
+
+  const handleOptionSelect = (option) => {
+    setModals((prevState) => ({
+      ...prevState,
+      [option]: true,
+    }));
+  };
+
+  const getColumnSearchProps = (dataIndex) => ({
+    filterDropdown: ({
+      setSelectedKeys,
+      selectedKeys,
+      confirm,
+      clearFilters,
+    }) => (
+      <div style={{ padding: 8 }}>
+        <Input
+          placeholder={`Search ${dataIndex}`}
+          value={selectedKeys[0]}
+          onChange={(e) =>
+            setSelectedKeys(e.target.value ? [e.target.value] : [])
+          }
+          onPressEnter={() => confirm()}
+          style={{ marginBottom: 8, display: "block" }}
+        />
+        <Space>
+          <Button
+            type="primary"
+            onClick={() => confirm()}
+            icon={<SearchOutlined />}
+          >
+            Search
+          </Button>
+          <Button onClick={() => clearFilters()}>Reset</Button>
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered) => (
+      <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
+    ),
+    onFilter: (value, record) =>
+      record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+  });
+
   const columns = [
-    { id: "si_no", label: "S No" },
-    { id: "ip_no", label: "IP No" },
-    { id: "admit_date", label: "Admit Date" },
-    { id: "exp_discharge_date", label: "Exp Discharge Date" },
-    { id: "patient_name", label: "Patient Name" },
-    { id: "room", label: "Room" },
-    { id: "ward", label: "Ward" },
-    { id: "doctor", label: "Doctor" },
-    { id: "actions", label: "Options" },
+    {
+      title: "S No",
+      dataIndex: "si_no",
+      key: "si_no",
+      ...getColumnSearchProps("si_no"),
+    },
+    {
+      title: "IP No",
+      dataIndex: "ip_no",
+      key: "ip_no",
+      ...getColumnSearchProps("ip_no"),
+    },
+    {
+      title: "Admit Date",
+      dataIndex: "admit_date",
+      key: "admit_date",
+      ...getColumnSearchProps("admit_date"),
+    },
+    {
+      title: "Exp Discharge Date",
+      dataIndex: "exp_discharge_date",
+      key: "exp_discharge_date",
+      ...getColumnSearchProps("exp_discharge_date"),
+    },
+    {
+      title: "Patient Name",
+      dataIndex: "patient_name",
+      key: "patient_name",
+      ...getColumnSearchProps("patient_name"),
+    },
+    {
+      title: "Room",
+      dataIndex: "room",
+      key: "room",
+      ...getColumnSearchProps("room"),
+    },
+    {
+      title: "Ward",
+      dataIndex: "ward",
+      key: "ward",
+      ...getColumnSearchProps("ward"),
+    },
+    {
+      title: "Doctor",
+      dataIndex: "doctor",
+      key: "doctor",
+      ...getColumnSearchProps("doctor"),
+    },
+    {
+      title: "Options",
+      key: "options",
+      render: (_, record) => (
+        <Dropdown
+          overlay={
+            <Menu>
+              <Menu.Item
+                onClick={() => handleOptionSelect("Change exp discharge date")}
+              >
+                Change exp discharge date
+              </Menu.Item>
+              <Menu.Item
+                onClick={() =>
+                  handleOptionSelect("View/edit discharge details")
+                }
+              >
+                View/edit discharge details
+              </Menu.Item>
+              <Menu.Item onClick={() => handleOptionSelect("Issue pharmacy")}>
+                Issue pharmacy
+              </Menu.Item>
+              <Menu.Item
+                onClick={() => handleOptionSelect("Nursing clearance set")}
+              >
+                Nursing clearance set
+              </Menu.Item>
+            </Menu>
+          }
+        >
+          <Button icon={<MoreOutlined />} />
+        </Dropdown>
+      ),
+    },
   ];
 
   const rows = [
@@ -77,84 +204,36 @@ const DischargeListTable = () => {
     },
   ];
 
-  const [modals, setModals] = useState({
-    "Change exp discharge date": false,
-    "View/edit discharge details": false,
-    "Issue pharmacy": false,
-    "Nursing clearance set": false,
-  });
-
-  const handleOptionSelect = (option) => {
-    setModals((prevState) => ({
-      ...prevState,
-      [option.label]: true,
-    }));
-  };
-
-  const menuOptions = [
-    {
-      label: "Change exp discharge date",
-      icon: <DateRangeIcon sx={{ color: "white" }} />,
-    },
-    {
-      label: "View/edit discharge details",
-      icon: <EditIcon sx={{ color: "white" }} />,
-    },
-    {
-      label: "Issue pharmacy",
-      icon: <LocalPharmacyIcon sx={{ color: "white" }} />,
-    },
-    {
-      label: "Nursing clearance set",
-      icon: <AccessibilityIcon sx={{ color: "white" }} />,
-    },
-  ];
-
   return (
-    <Box>
-      <IPTable
+    <div>
+      <Table
         columns={columns}
-        rows={rows}
-        menuOptions={menuOptions}
-        onOptionSelect={handleOptionSelect}
+        dataSource={rows}
+        rowKey="si_no"
+        pagination={{ pageSize: 5 }}
+        className="table-container"
       />
       <DischargeDate
         open={modals["Change exp discharge date"]}
         onClose={() =>
-          setModals((prevState) => ({
-            ...prevState,
-            "Change exp discharge date": false,
-          }))
+          setModals({ ...modals, "Change exp discharge date": false })
         }
       />
       <DischargeEntry
         open={modals["View/edit discharge details"]}
         onClose={() =>
-          setModals((prevState) => ({
-            ...prevState,
-            "View/edit discharge details": false,
-          }))
+          setModals({ ...modals, "View/edit discharge details": false })
         }
       />
       <NursingClearence
         open={modals["Nursing clearance set"]}
-        onClose={() =>
-          setModals((prevState) => ({
-            ...prevState,
-            "Nursing clearance set": false,
-          }))
-        }
+        onClose={() => setModals({ ...modals, "Nursing clearance set": false })}
       />
       <Pharmacy
         open={modals["Issue pharmacy"]}
-        onClose={() =>
-          setModals((prevState) => ({
-            ...prevState,
-            "Issue pharmacy": false,
-          }))
-        }
+        onClose={() => setModals({ ...modals, "Issue pharmacy": false })}
       />
-    </Box>
+    </div>
   );
 };
 

@@ -9,22 +9,25 @@ const printCompilationMessage = require("./compilation.config.js");
 
 module.exports = (_, argv) => ({
   output: {
-    publicPath: "http://localhost:3002/"
+    publicPath: "https://emr-ip-child2.web.app/",
   },
 
   resolve: {
-    extensions: [".tsx", ".ts", ".jsx", ".js", ".json"]
+    extensions: [".tsx", ".ts", ".jsx", ".js", ".json"],
   },
 
   devServer: {
     port: 3002,
     historyApiFallback: true,
     watchFiles: [path.resolve(__dirname, "src")],
+    hot: false, // 🔴 Disable Hot Module Replacement (HMR)
+    liveReload: false, // 🔴 Prevent WebSockets from reconnecting
+    client: {
+      webSocketURL: "auto://0.0.0.0:0/ws", // 🔴 Prevent WebSocket issues
+    },
     onListening: function (devServer) {
       const port = devServer.server.address().port;
-
       printCompilationMessage("compiling", port);
-
       devServer.compiler.hooks.done.tap("OutputMessagePlugin", (stats) => {
         setImmediate(() => {
           if (stats.hasErrors()) {
@@ -34,7 +37,7 @@ module.exports = (_, argv) => ({
           }
         });
       });
-    }
+    },
   },
 
   module: {
@@ -43,19 +46,19 @@ module.exports = (_, argv) => ({
         test: /\.m?js/,
         type: "javascript/auto",
         resolve: {
-          fullySpecified: false
-        }
+          fullySpecified: false,
+        },
       },
       {
         test: /\.(css|s[ac]ss)$/i,
-        use: ["style-loader", "css-loader", "postcss-loader"]
+        use: ["style-loader", "css-loader", "postcss-loader"],
       },
       {
         test: /\.(ts|tsx|js|jsx)$/,
         exclude: /node_modules/,
         use: {
-          loader: "babel-loader"
-        }
+          loader: "babel-loader",
+        },
       },
       {
         test: /\.(jpg|jpeg|png|gif|svg)$/i, // Match image files
@@ -63,44 +66,47 @@ module.exports = (_, argv) => ({
           {
             loader: "file-loader",
             options: {
-              name: "[path][name].[ext]" // Configure output file naming
-            }
-          }
-        ]
-      }
-    ]
+              name: "[path][name].[ext]", // Configure output file naming
+            },
+          },
+        ],
+      },
+    ],
   },
 
   plugins: [
     new ModuleFederationPlugin({
       name: "emr_ip",
       filename: "remoteEntry.js",
-      remotes: {},
+      remotes: {
+        emr_ui: "emr_ui@https://emr-ui-parent-25225.web.app/remoteEntry.js",
+      },
       exposes: {
-        "./IpHeaderTab":"./src/Components/Header.jsx"
+        "./IpHeaderTab": "./src/Components/Header.jsx",
+        "./ipReducer": "./src/Redux/reducer.jsx",
       },
       shared: {
         ...deps,
         react: {
           singleton: true,
           requiredVersion: deps["react"],
-          eager: false
+          eager: false,
         },
         "react-dom": {
           singleton: true,
           requiredVersion: deps["react-dom"],
-          eager: false
+          eager: false,
         },
         "react-router-dom": {
           singleton: true,
           requiredVersion: deps["react-router-dom"],
-          eager: false
-        }
-      }
+          eager: false,
+        },
+      },
     }),
     new HtmlWebPackPlugin({
-      template: "./src/index.html"
+      template: "./src/index.html",
     }),
-    new Dotenv()
-  ]
+    new Dotenv(),
+  ],
 });

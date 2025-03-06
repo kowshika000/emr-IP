@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkip_emr_module=self.webpackChunkip_emr_module||[]).push([[825],{825:(e,t,u)=>{function n(e){return({dispatch:t,getState:u})=>n=>r=>"function"==typeof r?r(t,u,e):n(r)}u.r(t),u.d(t,{thunk:()=>r,withExtraArgument:()=>i});var r=n(),i=n}}]);
