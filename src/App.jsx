@@ -1,25 +1,17 @@
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import Header from "./Components/Header";
-import DischargeList from "./ExpectedDischargeList/DischargeList";
-import BookingList from "./SurgeryBookingsList/BookingList";
-import WhiteBoard from "./WhiteBoard/WhiteBoard";
 import "bootstrap/dist/css/bootstrap.css";
+import store from "emr_ui/Store";
+import { Provider } from "react-redux";
 
 function App() {
-  return (
-    // <BrowserRouter>
-      <Header />
-    //   <Routes>
-    //     <Route path="/" element={<Navigate to="/dischargeList" />} />
-    //     <Route path="/dischargeList" element={<DischargeList />} />
-    //     <Route path="/bookingList" element={<BookingList />} />
-    //     <Route path="/whiteBoard" element={<WhiteBoard />} />
-    //   </Routes>
-    // </BrowserRouter>
-  );
+  return <Header />;
 }
 
 const root = ReactDOM.createRoot(document.getElementById("ip-app"));
-root.render(<App />);
+root.render(
+  <Provider store={store}>
+    <App />
+  </Provider>
+);
 
 export default App;
