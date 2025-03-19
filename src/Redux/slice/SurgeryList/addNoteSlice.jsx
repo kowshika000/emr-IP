@@ -2,12 +2,12 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import AxiosInstance from "../../api/AxiosInstance";
 import { API_ENDPOINTS } from "../../api/apiEndPointend";
 
-export const fetchChangeExpectedDate = createAsyncThunk(
-  "ip/changeExpectedDate",
+export const fetchAddNote = createAsyncThunk(
+  "ip/surgery",
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await AxiosInstance.post(
-        API_ENDPOINTS.CHANGE_DISCHARGE_DATE,
+        API_ENDPOINTS.ADD_NOTE,
         credentials
       );
       return response;
@@ -17,29 +17,29 @@ export const fetchChangeExpectedDate = createAsyncThunk(
   }
 );
 
-const changeExpectedDateSlice = createSlice({
-  name: "changeExpectedDate",
+const addNoteSlice = createSlice({
+  name: "note",
   initialState: {
-    changeExpectedDateData: [],
+    noteData: [],
     loading: false,
     error: null,
   },
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchChangeExpectedDate.pending, (state) => {
+      .addCase(fetchAddNote.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchChangeExpectedDate.fulfilled, (state, action) => {
+      .addCase(fetchAddNote.fulfilled, (state, action) => {
         state.loading = false;
-        state.changeExpectedDateData = action.payload.data;
+        state.noteData = action.payload.data;
       })
-      .addCase(fetchChangeExpectedDate.rejected, (state, action) => {
+      .addCase(fetchAddNote.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
   },
 });
 
-export default changeExpectedDateSlice.reducer;
+export default addNoteSlice.reducer;

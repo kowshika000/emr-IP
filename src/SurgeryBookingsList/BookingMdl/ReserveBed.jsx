@@ -4,26 +4,35 @@ import Input from "../../Components/Input";
 import { Box, Dialog, DialogContent, Typography } from "@mui/material";
 import { Bed } from "@mui/icons-material";
 import Button from "../../Components/Button";
+import { useDispatch } from "react-redux";
+import { fetchSearchBed } from "../../Redux/slice/SurgeryList/searchBedSlice";
 
 const ModalBodyDetails = () => {
+
+  const dispatch = useDispatch();
+
   const [reservationDetails, setReservationDetails] = useState({
-    expectedAdmitDate: "",
-    expectedAdmitTime: "",
-    expectedDischargeDate: "",
-    expectedDischargeTime: "",
-    bedType: "select",
-    ward: "select",
-    room: "select",
-    bed: "select",
+    admitDate: "",
+    dischargeDate: "",
+    bedType: "",
+    ward: "",
+    room: "",
+    bed: "",
   });
   const [search, setSearch] = useState(false);
   const [showBed, setShowBed] = useState(false);
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setReservationDetails((prevDetails) => ({
       ...prevDetails,
       [name]: value,
     }));
+  };
+
+  const handleSearch = () => {
+    setSearch(true);
+    dispatch(fetchSearchBed(reservationDetails));
   };
 
   return (
@@ -58,33 +67,21 @@ const ModalBodyDetails = () => {
         <div className="text-header">Bed Reservation Details</div>
         <div className="form-group">
           <Input
-            type="date"
-            label="Expected Admit Date"
-            name="expectedAdmitDate"
-            value={reservationDetails.expectedAdmitDate}
+            type="datetime-local"
+            label="Expected Admit Date & Time"
+            name="admitDate"
+            value={reservationDetails.admitDate}
             onChange={handleInputChange}
           />
+
           <Input
-            type="number"
-            label="Expected Admit Time"
-            name="expectedAdmitTime"
-            value={reservationDetails.expectedAdmitTime}
+            type="datetime-local"
+            label="Expected Discharge Date & Time"
+            name="dischargeDate"
+            value={reservationDetails.dischargeDate}
             onChange={handleInputChange}
           />
-          <Input
-            type="date"
-            label="Expected Discharge Date"
-            name="expectedDischargeDate"
-            value={reservationDetails.expectedDischargeDate}
-            onChange={handleInputChange}
-          />
-          <Input
-            type="number"
-            label="Expected Discharge Time"
-            name="expectedDischargeTime"
-            value={reservationDetails.expectedDischargeTime}
-            onChange={handleInputChange}
-          />
+
           <Input
             label="Bed Type"
             type="select"
@@ -141,18 +138,14 @@ const ModalBodyDetails = () => {
           />
           <Input
             label="Bed"
-            type="select"
+            type="text"
             name="bed"
-            options={["select", "Bed 1", "Bed 2", "Bed 3"]}
+            // options={["select", "Bed 1", "Bed 2", "Bed 3"]}
             value={reservationDetails.bed}
             onChange={handleInputChange}
           />
         </div>
-        <Button
-          btnName={"Search"}
-          direction={"end"}
-          onClick={() => setSearch(true)}
-        />
+        <Button btnName={"Search"} direction={"end"} onClick={handleSearch} />
 
         {search && (
           <Box>

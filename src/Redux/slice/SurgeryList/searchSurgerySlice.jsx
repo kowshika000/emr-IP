@@ -2,13 +2,15 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import AxiosInstance from "../../api/AxiosInstance";
 import { API_ENDPOINTS } from "../../api/apiEndPointend";
 
-export const fetchChangeExpectedDetails = createAsyncThunk(
-  "ip/changeExpectedDetails",
+export const fetchSearchSurgeryList = createAsyncThunk(
+  "ip/surgery",
   async (credentials, { rejectWithValue }) => {
     try {
-      const response = await AxiosInstance.put(
-        API_ENDPOINTS.CHANGE_DISCHARGE_DETAILS,
-        credentials
+      const response = await AxiosInstance.get(
+        API_ENDPOINTS.SEARCH_SURGERY_LIST,
+        {
+          params: credentials,
+        }
       );
       return response;
     } catch (error) {
@@ -17,29 +19,29 @@ export const fetchChangeExpectedDetails = createAsyncThunk(
   }
 );
 
-const changeExpectedDetailsSlice = createSlice({
-  name: "changeExpectedDetails",
+const searchSurgeryListSlice = createSlice({
+  name: "searchSurgeryList",
   initialState: {
-    changeExpectedDetailsData: [],
+    searchSurgeryListData: [],
     loading: false,
     error: null,
   },
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchChangeExpectedDetails.pending, (state) => {
+      .addCase(fetchSearchSurgeryList.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchChangeExpectedDetails.fulfilled, (state, action) => {
+      .addCase(fetchSearchSurgeryList.fulfilled, (state, action) => {
         state.loading = false;
-        state.changeExpectedDetailsData = action.payload.data;
+        state.searchSurgeryListData = action.payload.data;
       })
-      .addCase(fetchChangeExpectedDetails.rejected, (state, action) => {
+      .addCase(fetchSearchSurgeryList.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
   },
 });
 
-export default changeExpectedDetailsSlice.reducer;
+export default searchSurgeryListSlice.reducer;
