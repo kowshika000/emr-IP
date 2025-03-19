@@ -2,44 +2,43 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import AxiosInstance from "../../api/AxiosInstance";
 import { API_ENDPOINTS } from "../../api/apiEndPointend";
 
-export const fetchDischargeDetails = createAsyncThunk(
-  "ip/dischargeDetails",
+export const fetchGetNote = createAsyncThunk(
+  "ip/surgery",
   async (id, { rejectWithValue }) => {
     try {
       const response = await AxiosInstance.get(
-        `${API_ENDPOINTS.DISCHARGE_DETAILS}/${id}`,
-        
+        `${API_ENDPOINTS.GET_NOTE}/${id}`
       );
-      return response;
+      return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message);
     }
   }
 );
 
-const dischargeDetailsSlice = createSlice({
-  name: "dischargeDetails",
+const getNoteSlice = createSlice({
+  name: "note",
   initialState: {
-    dischargeDetailsData: [],
+    data: [],
     loading: false,
     error: null,
   },
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchDischargeDetails.pending, (state) => {
+      .addCase(fetchGetNote.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchDischargeDetails.fulfilled, (state, action) => {
+      .addCase(fetchGetNote.fulfilled, (state, action) => {
         state.loading = false;
-        state.dischargeDetailsData = action.payload.data;
+        state.data = action.payload.data;
       })
-      .addCase(fetchDischargeDetails.rejected, (state, action) => {
+      .addCase(fetchGetNote.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
   },
 });
 
-export default dischargeDetailsSlice.reducer;
+export default getNoteSlice.reducer;

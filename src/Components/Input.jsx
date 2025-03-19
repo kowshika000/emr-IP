@@ -15,8 +15,8 @@ const Input = ({ value, type, onChange, label, name, options }) => {
             Select an option
           </option>
           {options.map((option, index) => (
-            <option key={index} value={option}>
-              {option}
+            <option key={index} value={option.value}>
+              {option.value}
             </option>
           ))}
         </select>
@@ -39,12 +39,7 @@ const Input = ({ value, type, onChange, label, name, options }) => {
   return (
     <div className="form-input">
       <label>{label}</label>
-      <input
-        type={type}
-        value={value}
-        onChange={onChange}
-        name={name}
-      />
+      <input type={type} value={value} onChange={onChange} name={name} />
     </div>
   );
 };

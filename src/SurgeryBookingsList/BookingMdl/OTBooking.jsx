@@ -1,18 +1,19 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import IPModal from "../../Components/IPModal";
 import Input from "../../Components/Input";
 import { Box } from "@mui/material";
 import Button from "../../Components/Button";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchReschedule } from "../../Redux/slice/SurgeryList/rescheduleOtSlice";
+import { fetchSurgeryBookingDetail } from "../../Redux/slice/SurgeryList/bookingDetailSlice";
 
-const ModalBodyDetails = () => {
+const ModalBodyDetails = ({ onClose, surgeryId }) => {
+  const dispatch = useDispatch();
+  const { data } = useSelector((state) => state.ip?.bookingDetails);
+  const bookingData = data?.[0];
+  console.log(bookingData);
+
   const [formData, setFormData] = useState({
-    appointmentWithDoctor: "John",
-    takenBy: "Administrator 25-9-2024",
-    patientType: "xxxxxxx",
-    date: "yyyyyy",
-    time: "mmmmmm",
-    mobile: "1234567890",
-    name: "xxxxxxxx",
     remarks: "",
     callStatus: "",
   });
@@ -26,9 +27,9 @@ const ModalBodyDetails = () => {
   };
 
   const [schedule, setSchedule] = useState({
-    date: "",
-    time: "",
-    slot: "",
+    rescheduleDate: "",
+    rescheduleTime: "",
+    // slot: "",
   });
 
   const handleChangeSchedule = (e) => {
@@ -38,38 +39,44 @@ const ModalBodyDetails = () => {
       [name]: value,
     }));
   };
-
+  useEffect(() => {
+    dispatch(fetchSurgeryBookingDetail({ surgeryId }));
+  }, []);
+  const handleReschedule = () => {
+    dispatch(fetchReschedule({ surgeryId, data: schedule }));
+    onClose();
+  };
   return (
     <div>
       <div className="text-header">Resource Doctors Schedule Details</div>
       <div className="form-group">
         <div className="showDetails">
           <label>Appointment with Doctor:</label>
-          <div>{formData.appointmentWithDoctor}</div>
+          {/* <div>{bookingData.appointmentWithDoctor}</div> */}
         </div>
         <div className="showDetails">
           <label>Taken By:</label>
-          <div>{formData.takenBy}</div>
+          {/* <div>{bookingData.takenBy}</div> */}
         </div>
         <div className="showDetails">
           <label>Patient Type:</label>
-          <div>{formData.patientType}</div>
+          {/* <div>{bookingData.patientType}</div> */}
         </div>
         <div className="showDetails">
           <label>Date:</label>
-          <div>{formData.date}</div>
+          {/* <div>{bookingData.admit_date}</div> */}
         </div>
         <div className="showDetails">
           <label>Time:</label>
-          <div>{formData.time}</div>
+          {/* <div>{bookingData.time}</div> */}
         </div>
         <div className="showDetails">
           <label>Mobile:</label>
-          <div>{formData.mobile}</div>
+          {/* <div>{bookingData.mobile}</div> */}
         </div>
         <div className="showDetails">
           <label>Name:</label>
-          <div>{formData.name}</div>
+          {/* <div>{bookingData.name}</div> */}
         </div>
       </div>
       <div className="form-group">
@@ -89,7 +96,7 @@ const ModalBodyDetails = () => {
           options={["Pending", "Completed", "Cancelled"]}
         />
         <Box marginTop={"inherit"} marginLeft={"auto"}>
-          <Box display={"flex"}  gap={"16px"}>
+          <Box display={"flex"} gap={"16px"}>
             <Button btnName="Update" direction={"end"} />
             <Button btnName="Close" direction={"end"} />
           </Box>
@@ -102,43 +109,47 @@ const ModalBodyDetails = () => {
       <div className="text-header">Reschedule</div>
       <div className="form-group">
         <Input
-          type="text"
+          type="date"
           label="Date"
-          value={schedule.date}
-          name="date"
+          value={schedule.rescheduleDate}
+          name="rescheduleDate"
           onChange={handleChangeSchedule}
         />
         <Input
-          type="text"
+          type="time"
           label="Time"
-          value={schedule.time}
-          name="time"
+          value={schedule.rescheduleTime}
+          name="rescheduleTime"
           onChange={handleChangeSchedule}
         />
         <Input
           type="text"
           label="Slot"
-          value={schedule.slot}
+          // value={schedule.slot}
           name="slot"
-          onChange={handleChangeSchedule}
+          // onChange={handleChangeSchedule}
         />
-         <Box marginTop={"inherit"} marginLeft={"auto"}>
-         <Button btnName="Reschedule" direction={"end"} />
+        <Box marginTop={"inherit"} marginLeft={"auto"}>
+          <Button
+            onClick={handleReschedule}
+            btnName="Reschedule"
+            direction={"end"}
+          />
         </Box>
       </div>
-
-      
     </div>
   );
 };
 
-const OTBooking = ({ open, onClose }) => {
+const OTBooking = ({ open, onClose, surgeryId }) => {
   return (
     <div>
       <IPModal
         open={open}
         onClose={onClose}
-        showDetails={<ModalBodyDetails />}
+        showDetails={
+          <ModalBodyDetails surgeryId={surgeryId} onClose={onClose} />
+        }
       />
     </div>
   );

@@ -8,7 +8,7 @@ export const fetchSearchDischargeList = createAsyncThunk(
     try {
       const response = await AxiosInstance.get(
         API_ENDPOINTS.SEARCH_DISCHARGE_LIST,
-        credentials
+        { params: credentials }
       );
       return response;
     } catch (error) {

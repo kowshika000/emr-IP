@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Table, Input, Space, Dropdown, Menu, Button } from "antd";
 import { SearchOutlined, MoreOutlined } from "@ant-design/icons";
 import DateRangeIcon from "@mui/icons-material/DateRange";
@@ -16,51 +16,68 @@ import ReserveBed from "./BookingMdl/ReserveBed";
 import AnaesthesiaSchedule from "./BookingMdl/AnaesthesiaSchedule";
 import CancelSurgery from "./BookingMdl/CancelSurgery";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchSurgeryList } from "../Redux/slice/SurgeryList/surgeryListSlice";
+import { fetchSearchSurgeryList } from "../Redux/slice/SurgeryList/searchSurgerySlice";
 
 const BookingListTable = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const today = new Date().toISOString().split("T")[0];
 
   const [modalStates, setModalStates] = useState({});
-  const [searchText, setSearchText] = useState("");
+  const [selectedRecord, setSelectedRecord] = useState(null);
 
-  const handleSearch = (selectedKeys, confirm) => {
-    confirm();
-    setSearchText(selectedKeys[0]);
-  };
+  const { searchSurgeryListData } = useSelector(
+    (state) => state.ip?.searchSurgery
+  );
+  const rowDatas = searchSurgeryListData?.data?.content;
+  console.log("search data", rowDatas);
 
-  const getColumnSearchProps = (dataIndex) => ({
-    filterDropdown: ({
-      setSelectedKeys,
-      selectedKeys,
-      confirm,
-      clearFilters,
-    }) => (
-      <div style={{ padding: 8 }}>
-        <Input
-          placeholder={`Search ${dataIndex}`}
-          value={selectedKeys[0]}
-          onChange={(e) =>
-            setSelectedKeys(e.target.value ? [e.target.value] : [])
-          }
-          onPressEnter={() => handleSearch(selectedKeys, confirm)}
-          style={{ marginBottom: 8, display: "block" }}
-        />
-      </div>
-    ),
-    filterIcon: (filtered) => (
-      <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
-    ),
+  useEffect(() => {
+    dispatch(fetchSurgeryList({ surgeryDate: today }));
+  }, []);
+
+  const [searchFilters, setSearchFilters] = useState({
+    mrdNo: "",
+    patientName: "",
+    admitDate: "",
+    mobile: "",
+    surgeryBookedDate: "",
+    bookedBy: "",
+    approvalStatus: "",
+    theater: "",
+    surgeon: "",
+    anesthesiaStatus: "",
+    anesthesiaDate: "",
+    otStatus: "",
+    surgeryDate: "",
   });
+  const handleSearchChange = (e, dataIndex) => {
+    const { value } = e.target;
+    const updatedFilters = { ...searchFilters, [dataIndex]: value };
+    setSearchFilters(updatedFilters);
+    // Filter out empty values before dispatching
+    const payload = Object.fromEntries(
+      Object.entries(updatedFilters).filter(([_, v]) => v.trim() !== "")
+    );
+    dispatch(fetchSearchSurgeryList(payload));
+  };
 
   const handleMenuClick = (record, { key }) => {
     if (key === "Admit Patient") {
       navigate("/secure/registration", { state: { patientData: record } });
     } else if (key === "Revisit Patient (Day Surgery)") {
-      navigate("/secure/registration?tab=revist_registration", { state: { patientData: record } });
+      navigate("/secure/registration?tab=revist_registration", {
+        state: { patientData: record },
+      });
     } else if (key === "Revisit Patient (Pre-Admission)") {
-      navigate("/secure/registration?tab=revist_registration", { state: { patientData: record } });
+      navigate("/secure/registration?tab=revist_registration", {
+        state: { patientData: record },
+      });
     } else {
       setModalStates((prevState) => ({ ...prevState, [key]: true }));
+      setSelectedRecord(record);
     }
   };
 
@@ -103,81 +120,181 @@ const BookingListTable = () => {
   const columns = [
     {
       title: "S No",
-      dataIndex: "si_no",
-      key: "si_no",
-      ...getColumnSearchProps("si_no"),
+      dataIndex: "sNo",
+      key: "sNo",
+      render: (text, record, index) => index + 1,
     },
     {
       title: "MR No",
-      dataIndex: "mr_no",
-      key: "mr_no",
-      ...getColumnSearchProps("mr_no"),
+      dataIndex: "mrdNo",
+      key: "mrdNo",
+      filterDropdown: () => (
+        <Input
+          placeholder="Search"
+          value={searchFilters.mrdNo}
+          onChange={(e) => handleSearchChange(e, "mrdNo")}
+          style={{ display: "block" }}
+        />
+      ),
+      filterIcon: <SearchOutlined />,
     },
     {
       title: "Patient",
-      dataIndex: "patient",
-      key: "patient",
-      ...getColumnSearchProps("patient"),
+      dataIndex: "patientName",
+      key: "patientName",
+      filterDropdown: () => (
+        <Input
+          placeholder="Search"
+          value={searchFilters.patientName}
+          onChange={(e) => handleSearchChange(e, "patientName")}
+          style={{ display: "block" }}
+        />
+      ),
+      filterIcon: <SearchOutlined />,
     },
     {
       title: "Admit Date",
-      dataIndex: "admit_date",
-      key: "admit_date",
-      ...getColumnSearchProps("admit_date"),
+      dataIndex: "admitDate",
+      key: "admitDate",
+      filterDropdown: () => (
+        <Input
+          placeholder="Search"
+          type="date"
+          value={searchFilters.admitDate}
+          onChange={(e) => handleSearchChange(e, "admitDate")}
+          style={{ display: "block" }}
+        />
+      ),
+      filterIcon: <SearchOutlined />,
     },
     {
       title: "Mobile",
       dataIndex: "mobile",
       key: "mobile",
-      ...getColumnSearchProps("mobile"),
+      filterDropdown: () => (
+        <Input
+          placeholder="Search"
+          value={searchFilters.mobile}
+          onChange={(e) => handleSearchChange(e, "mobile")}
+          style={{ display: "block" }}
+        />
+      ),
+      filterIcon: <SearchOutlined />,
     },
     {
       title: "Surgery Booked Date & By",
-      dataIndex: "exp_discharge_date",
-      key: "exp_discharge_date",
-      ...getColumnSearchProps("exp_discharge_date"),
+      dataIndex: "surgeryBookedDate",
+      key: "surgeryBookedDate",
+      filterDropdown: () => (
+        <Input
+          placeholder="Search"
+          type="date"
+          value={searchFilters.surgeryBookedDate}
+          onChange={(e) => handleSearchChange(e, "surgeryBookedDate")}
+          style={{ display: "block" }}
+        />
+      ),
+      filterIcon: <SearchOutlined />,
     },
     {
       title: "Approval Status",
-      dataIndex: "ward",
-      key: "ward",
-      ...getColumnSearchProps("ward"),
+      dataIndex: "approvalStatus",
+      key: "approvalStatus",
+      filterDropdown: () => (
+        <Input
+          placeholder="Search"
+          value={searchFilters.approvalStatus}
+          onChange={(e) => handleSearchChange(e, "approvalStatus")}
+          style={{ display: "block" }}
+        />
+      ),
+      filterIcon: <SearchOutlined />,
     },
     {
       title: "Theater",
-      dataIndex: "doctor",
-      key: "doctor",
-      ...getColumnSearchProps("doctor"),
+      dataIndex: "theaterName",
+      key: "theaterName",
+      filterDropdown: () => (
+        <Input
+          placeholder="Search"
+          value={searchFilters.theater}
+          onChange={(e) => handleSearchChange(e, "theater")}
+          style={{ display: "block" }}
+        />
+      ),
+      filterIcon: <SearchOutlined />,
     },
     {
       title: "Surgeon",
       dataIndex: "surgeon",
       key: "surgeon",
-      ...getColumnSearchProps("surgeon"),
+      filterDropdown: () => (
+        <Input
+          placeholder="Search "
+          value={searchFilters.surgeon}
+          onChange={(e) => handleSearchChange(e, "surgeon")}
+          style={{ display: "block" }}
+        />
+      ),
+      filterIcon: <SearchOutlined />,
     },
     {
       title: "Anaesthesia Schedule Status",
-      dataIndex: "anaesthesia_schedule_status",
-      key: "anaesthesia_schedule_status",
-      ...getColumnSearchProps("anaesthesia_schedule_status"),
+      dataIndex: "anesthesiaStatus",
+      key: "anesthesiaStatus",
+      filterDropdown: () => (
+        <Input
+          placeholder="Search"
+          value={searchFilters.anesthesiaStatus}
+          onChange={(e) => handleSearchChange(e, "anesthesiaStatus")}
+          style={{ display: "block" }}
+        />
+      ),
+      filterIcon: <SearchOutlined />,
     },
     {
       title: "Anaesthesia Schedule Date & Time",
-      dataIndex: "anaesthesia_schedule_datetime",
-      key: "anaesthesia_schedule_datetime",
-      ...getColumnSearchProps("anaesthesia_schedule_datetime"),
+      dataIndex: "anesthesiaDate",
+      key: "anesthesiaDate",
+      filterDropdown: () => (
+        <Input
+          placeholder="Search"
+          type="date"
+          value={searchFilters.anesthesiaDate}
+          onChange={(e) => handleSearchChange(e, "anesthesiaDate")}
+          style={{ display: "block" }}
+        />
+      ),
+      filterIcon: <SearchOutlined />,
     },
     {
       title: "OT Schedule Status",
-      dataIndex: "ot_schedule_status",
-      key: "ot_schedule_status",
-      ...getColumnSearchProps("ot_schedule_status"),
+      dataIndex: "otStatus",
+      key: "otStatus",
+      filterDropdown: () => (
+        <Input
+          placeholder="Search"
+          value={searchFilters.otStatus}
+          onChange={(e) => handleSearchChange(e, "otStatus")}
+          style={{ display: "block" }}
+        />
+      ),
+      filterIcon: <SearchOutlined />,
     },
     {
       title: "Surgery Date & Time",
-      dataIndex: "surgery_datetime",
-      key: "surgery_datetime",
-      ...getColumnSearchProps("surgery_datetime"),
+      dataIndex: "surgeryDate",
+      key: "surgeryDate",
+      filterDropdown: () => (
+        <Input
+          placeholder="Search"
+          type="date"
+          value={searchFilters.surgeryDate}
+          onChange={(e) => handleSearchChange(e, "surgeryDate")}
+          style={{ display: "block" }}
+        />
+      ),
+      filterIcon: <SearchOutlined />,
     },
     {
       title: "Options",
@@ -197,50 +314,56 @@ const BookingListTable = () => {
     },
   ];
 
-  const rows = [
-    {
-      si_no: 1,
-      mr_no: "MR123",
-      patient: "John Doe",
-      admit_date: "2024-11-01",
-      mobile: "9876543210",
-      exp_discharge_date: "2024-11-10",
-      ward: "ICU",
-      doctor: "Dr. Smith",
-      surgeon: "Dr. Brown",
-      anaesthesia_schedule_status: "Scheduled",
-      anaesthesia_schedule_datetime: "2024-11-10 09:00 AM",
-      ot_schedule_status: "Confirmed",
-      surgery_datetime: "2024-11-10 10:00 AM",
-    },
-  ];
-
   return (
     <>
       <Table
         columns={columns}
-        dataSource={rows}
-        rowKey="si_no"
+        dataSource={rowDatas}
+        rowKey="sNo"
         pagination={{ pageSize: 5 }}
         className="table-container"
       />
-      {menuOptions.map(({ key }) => {
-        const Component = {
-          "Add Notes": AddNotes,
-          "Reschedule OT Booking": OTBooking,
-          "Cancel OT Schedule": OTCancel,
-          "Anaesthesia Schedule": AnaesthesiaSchedule,
-          "Reserve bed": ReserveBed,
-          "Cancel Surgery Order": CancelSurgery,
-        }[key];
-        return Component ? (
-          <Component
-            key={key}
-            open={modalStates[key]}
-            onClose={() => setModalStates({ [key]: false })}
-          />
-        ) : null;
-      })}
+      {modalStates["Add Notes"] && selectedRecord && (
+        <AddNotes
+          open={modalStates["Add Notes"]}
+          onClose={() => setModalStates({ "Add Notes": false })}
+          patientId={selectedRecord.patientId}
+          surgeryId={selectedRecord.surgeryId}
+        />
+      )}
+
+      {modalStates["Reschedule OT Booking"] && selectedRecord && (
+        <OTBooking
+          open={modalStates["Reschedule OT Booking"]}
+          onClose={() => setModalStates({ "Reschedule OT Booking": false })}
+          surgeryId={selectedRecord.surgeryId}
+        />
+      )}
+      {modalStates["Cancel OT Schedule"] && (
+        <OTCancel
+          open={modalStates["Cancel OT Schedule"]}
+          onClose={() => setModalStates({ "Cancel OT Schedule": false })}
+        />
+      )}
+      {modalStates["Anaesthesia Schedule"] && (
+        <AnaesthesiaSchedule
+          open={modalStates["Anaesthesia Schedule"]}
+          onClose={() => setModalStates({ "Anaesthesia Schedule": false })}
+        />
+      )}
+      {modalStates["Reserve bed"] && (
+        <ReserveBed
+          open={modalStates["Reserve bed"]}
+          onClose={() => setModalStates({ "Reserve bed": false })}
+        />
+      )}
+      {modalStates["Cancel Surgery Order"] && (
+        <CancelSurgery
+          open={modalStates["Cancel Surgery Order"]}
+          onClose={() => setModalStates({ "Cancel Surgery Order": false })}
+          surgeryId={selectedRecord.surgeryId}
+        />
+      )}
     </>
   );
 };
