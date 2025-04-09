@@ -90,6 +90,7 @@ module.exports = (_, argv) => {
         },
         exposes: {
           "./IpHeaderTab": "./src/Components/Header.jsx",
+          "./OtBooking": "./src/OtBooking/OtBooking.jsx",
           "./ipReducer": "./src/Redux/reducer.jsx",
         },
         shared: {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchDischargeList } from "../Redux/slice/ExpectedDischarge/dischargeListSlice";
-import { Table, Input, Space, Button, Dropdown, Menu } from "antd";
+import { Table, Input, Button, Dropdown, Menu } from "antd";
 import { SearchOutlined, MoreOutlined } from "@ant-design/icons";
 import NursingClearence from "./DischargeMdl/NursingClearence";
 import Pharmacy from "./DischargeMdl/Pharmacy";
@@ -11,18 +11,20 @@ import PreDischarge from "./DischargeMdl/PreDischarge";
 
 const DischargeListTable = () => {
   const dispatch = useDispatch();
-  // const today = new Date().toISOString().split("T")[0];
+  const today = new Date().toISOString().split("T")[0];
   // const { searchDischargeListData } = useSelector(
   //   (state) => state?.ip?.searchList
   // );
   // const searchData = searchDischargeListData?.data?.content;
-
-  const { dischargeListData } = useSelector((state) => state?.ip?.dischargeList);
+  //  "2024-12-30"
+  const { dischargeListData } = useSelector(
+    (state) => state?.ip?.dischargeList
+  );
 
   const row = dischargeListData?.data?.content;
 
   useEffect(() => {
-    dispatch(fetchDischargeList({ dischargeDate: "2024-12-30" }));
+    dispatch(fetchDischargeList({ dischargeDate: '2025-04-02' }));
   }, [dispatch]);
 
   const [modals, setModals] = useState({
