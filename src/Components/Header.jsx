@@ -3,11 +3,12 @@ import { Tabs } from "antd";
 import DischargeList from "../ExpectedDischargeList/DischargeList";
 import BookingList from "../SurgeryBookingsList/BookingList";
 import WhiteBoard from "../WhiteBoard/WhiteBoard";
+import PatientList from "../PatientList/PatientList";
 
 const { TabPane } = Tabs;
 
 const Header = () => {
-  const [activeTab, setActiveTab] = useState("dischargeList");
+  const [activeTab, setActiveTab] = useState("inPateintList");
 
   return (
     <div
@@ -20,6 +21,7 @@ const Header = () => {
           onChange={(key) => setActiveTab(key)}
           type="card"
         >
+          <TabPane tab="In Patient List" key="inPateintList" />
           <TabPane tab="Expected Discharge List" key="dischargeList" />
           <TabPane tab="Surgery Bookings List" key="bookingList" />
           <TabPane tab="Whiteboard" key="whiteBoard" />
@@ -30,6 +32,7 @@ const Header = () => {
         {activeTab === "dischargeList" && <DischargeList />}
         {activeTab === "bookingList" && <BookingList />}
         {activeTab === "whiteBoard" && <WhiteBoard />}
+        {activeTab === "inPateintList" && <PatientList />}
       </div>
     </div>
   );

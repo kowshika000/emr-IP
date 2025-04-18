@@ -3,7 +3,7 @@ import AxiosInstance from "../../api/AxiosInstance";
 import { API_ENDPOINTS } from "../../api/apiEndPointend";
 
 export const fetchCancelOrder = createAsyncThunk(
-    "ip/surgery",
+    "ip/surgeryCancelOrder ",
     async ({ id, reason }, { rejectWithValue }) => {
       try {
         const response = await AxiosInstance.delete(API_ENDPOINTS.CANCEL_ORDER, {

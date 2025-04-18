@@ -3,7 +3,7 @@ import AxiosInstance from "../../api/AxiosInstance";
 import { API_ENDPOINTS } from "../../api/apiEndPointend";
 
 export const fetchDeleteNote = createAsyncThunk(
-  "ip/surgery",
+  "ip/surgeryDeleteNote",
   async (id, { rejectWithValue }) => {
     try {
       const response = await AxiosInstance.delete(

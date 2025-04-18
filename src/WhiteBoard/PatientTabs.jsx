@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Tabs, Card, Typography, Row, Col, Divider } from "antd";
 import {
   UserOutlined,
@@ -9,6 +9,8 @@ import {
   MedicineBoxOutlined,
   LogoutOutlined,
 } from "@ant-design/icons";
+import { useDispatch } from "react-redux";
+import { fetchwhiteboard } from "../Redux/slice/whiteboard/whiteboardList";
 
 const { TabPane } = Tabs;
 
@@ -17,7 +19,7 @@ function PatientInfo({ data }) {
     <Card
       style={{
         borderRadius: "12px",
-        boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.15)", 
+        boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.15)",
         marginBottom: "16px",
         // backgroundColor: "rgb(189, 204, 204)",
       }}
@@ -73,6 +75,8 @@ function PatientInfo({ data }) {
 }
 
 function PatientTabs() {
+  const dispatch = useDispatch();
+
   const [activeKey, setActiveKey] = useState("1");
 
   const allPatients = [
@@ -117,7 +121,9 @@ function PatientTabs() {
       ward: "ER Room",
     },
   ];
-
+  useEffect(() => {
+    dispatch(fetchwhiteboard());
+  }, [dispatch]);
   return (
     <Tabs activeKey={activeKey} onChange={setActiveKey} centered type="card">
       <TabPane

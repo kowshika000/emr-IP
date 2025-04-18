@@ -12,11 +12,7 @@ import PreDischarge from "./DischargeMdl/PreDischarge";
 const DischargeListTable = () => {
   const dispatch = useDispatch();
   const today = new Date().toISOString().split("T")[0];
-  // const { searchDischargeListData } = useSelector(
-  //   (state) => state?.ip?.searchList
-  // );
-  // const searchData = searchDischargeListData?.data?.content;
-  //  "2024-12-30"
+
   const { dischargeListData } = useSelector(
     (state) => state?.ip?.dischargeList
   );
@@ -24,7 +20,7 @@ const DischargeListTable = () => {
   const row = dischargeListData?.data?.content;
 
   useEffect(() => {
-    dispatch(fetchDischargeList({ dischargeDate: '2025-04-02' }));
+    dispatch(fetchDischargeList({ dischargeDate: today }));
   }, [dispatch]);
 
   const [modals, setModals] = useState({
