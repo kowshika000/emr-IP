@@ -16,6 +16,7 @@ import editNoteReducer from "./slice/SurgeryList/editNoteSlice";
 import deleteNoteReducer from "./slice/SurgeryList/deleteNoteSlice";
 import searchBedReducer from "./slice/SurgeryList/searchBedSlice";
 import cancelOrderReducer from "./slice/SurgeryList/cancelOrderSlice";
+import whiteboardReducer from "./slice/whiteboard/whiteboardList";
 
 const ipReducer = combineReducers({
   // Expected Discharge
@@ -38,6 +39,10 @@ const ipReducer = combineReducers({
   deleteNote: deleteNoteReducer,
   searchBed: searchBedReducer,
   cancelOrder: cancelOrderReducer,
+
+  // whiteboard
+
+  whiteboaedList: whiteboardReducer,
 });
 
 export default ipReducer;

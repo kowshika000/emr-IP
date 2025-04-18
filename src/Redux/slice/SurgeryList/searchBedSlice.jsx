@@ -3,7 +3,7 @@ import AxiosInstance from "../../api/AxiosInstance";
 import { API_ENDPOINTS } from "../../api/apiEndPointend";
 
 export const fetchSearchBed = createAsyncThunk(
-  "ip/surgery",
+  "ip/surgerySearchBed",
   async (credentials, { rejectWithValue }) => {
     // Filter out undefined, null, and empty string values
     const filteredCredentials = Object.fromEntries(

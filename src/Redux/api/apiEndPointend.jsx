@@ -7,6 +7,7 @@ export const API_ENDPOINTS = {
   CHANGE_EXP_DISCHARGE: "inPatient/changeExpectedDischargeDetails",
   PHARMACY_CLEARANCE: "inPatient/pharmacyClearance",
   NURSING_CLEARANCE: "inPatient/nursingClearance",
+  PATIENT_LIST: "patient/today",
 
   // sugery booking
   SURGERY_LIST: "surgery/getTodaySurgeryList",
@@ -18,5 +19,9 @@ export const API_ENDPOINTS = {
   DELETE_NOTE: "surgery/deleteSurgeryNotes",
   RESCHEDULE_OT: "surgery/createReschedule",
   SEARCH_BED: "surgery/searchBedReservationDetails",
-  CANCEL_ORDER:"surgery/cancelSurgeryOrder",
+  CANCEL_ORDER: "surgery/cancelSurgeryOrder",
+
+  // whiteboard
+
+  WHITEBOARD_LIST: "whitePages/searchWhiteBoard",
 };

@@ -3,7 +3,7 @@ import AxiosInstance from "../../api/AxiosInstance";
 import { API_ENDPOINTS } from "../../api/apiEndPointend";
 
 export const fetchSurgeryBookingDetail = createAsyncThunk(
-  "ip/surgery",
+  "ip/surgeryBookingDetail ",
   async ({ surgeryId }, { rejectWithValue }) => {
     try {
       const response = await AxiosInstance.get(

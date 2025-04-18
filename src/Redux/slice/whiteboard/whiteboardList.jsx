@@ -2,13 +2,13 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import AxiosInstance from "../../api/AxiosInstance";
 import { API_ENDPOINTS } from "../../api/apiEndPointend";
 
-export const fetchGetNote = createAsyncThunk(
-  "ip/surgeryGetNote",
-  async (id, { rejectWithValue }) => {
+export const fetchwhiteboard = createAsyncThunk(
+  "ip/whiteboard",
+  async (credentials, { rejectWithValue }) => {
     try {
-      const response = await AxiosInstance.get(
-        `${API_ENDPOINTS.GET_NOTE}/${id}`
-      );
+      const response = await AxiosInstance.get(API_ENDPOINTS.WHITEBOARD_LIST, {
+        params: credentials,
+      });
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message);
@@ -16,7 +16,7 @@ export const fetchGetNote = createAsyncThunk(
   }
 );
 
-const getNoteSlice = createSlice({
+const whiteboardSlice = createSlice({
   name: "note",
   initialState: {
     data: [],
@@ -26,19 +26,19 @@ const getNoteSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchGetNote.pending, (state) => {
+      .addCase(fetchwhiteboard.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchGetNote.fulfilled, (state, action) => {
+      .addCase(fetchwhiteboard.fulfilled, (state, action) => {
         state.loading = false;
         state.data = action.payload.data;
       })
-      .addCase(fetchGetNote.rejected, (state, action) => {
+      .addCase(fetchwhiteboard.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
   },
 });
 
-export default getNoteSlice.reducer;
+export default whiteboardSlice.reducer;
